@@ -9,13 +9,56 @@
 #include <string.h>
 #include <termios.h>
 #include <ctype.h>
+#include <bsd/stdlib.h>
 #define MAXCHARS 256
+#define INTLENGTH 10
 
 int check_yes_no(char *yes_no) {
 	int valid = strlen(yes_no) == 1 && (toupper(yes_no[0]) == 'Y'\
 			|| toupper(yes_no[0]) == 'N') ? 0 : 1;
 	return valid;
 
+}
+
+int check_gen_or_create(char *gen_cre) {
+	int valid = strlen(gen_cre) == 1 && \
+		    (toupper(gen_cre[0]) == 'G' || toupper(gen_cre[0]) == 'C')\
+		    ? 0 : 1;
+	return valid;
+}
+
+void generate_password(char *password) {
+	int max_length;
+	char number_input[INTLENGTH];
+	printf("Enter the maximum length of your password. (Press enter if you"
+		" don't want to specify maximum charaters): ");
+	fgets(number_input, INTLENGTH, stdin);
+	if (number_input[0] == '\n') {
+		max_length = arc4random_uniform(10) + 10;
+	}
+	else {
+		max_length = strtol(number_input, NULL, 10);
+	}
+	/** TODO: Work on the algorithm with constraints 
+	char lower_case[10];
+	char upper_case[10];
+	char number[10];
+	char random[10];
+
+	set_random(lower_case, "l");
+	set_random(upper_case, "u");
+	set_random(number, "n");
+	set_random(random, "r");
+	*/
+	int i = 0;
+	int random;
+	while (i < max_length) {
+		random = arc4random_uniform(94) + 33;
+		password[i] = random;
+		i++;
+	}
+	password[i] = '\0';
+	printf("Your password is %s\n", password);
 }
 int getpassword(char *password, FILE *fp, struct termios *oflags, \
 		struct termios *nflags) {
@@ -40,6 +83,24 @@ int getpassword(char *password, FILE *fp, struct termios *oflags, \
 	return 0;
 }
 
+void add_to_csv(char *domain, char *username, char *password, FILE *fp) {
+	fputs(domain, fp);
+	fputc(',', fp);
+	fputs(username, fp);
+	fputc(',', fp);
+	fputs(password, fp);
+	fputc('\n', fp);
+}
+
+void create_header(FILE *fp) {
+	fputs("Domain name", fp);
+	fputc(',', fp);
+	fputs("Username", fp);
+	fputc(',', fp);
+	fputs("Password", fp);
+	fputc('\n', fp);
+}
+
 int main(int argc, char **argv) {
 	struct termios oflags, nflags;
 	char file[MAXCHARS];
@@ -53,12 +114,14 @@ int main(int argc, char **argv) {
 		fgets(file, MAXCHARS, stdin);
 		file[strlen(file) - 1] = '\0';
 		fp = fopen(file, "w");
+		create_header(fp);
 	}
 	if (fp == NULL) {
 		perror("fopen");
 		exit(1);
 	}
 	char yes_no[MAXCHARS];
+	char generate_create[MAXCHARS];
 	char domain[MAXCHARS];
 	char username[MAXCHARS];
 	char password[MAXCHARS];
@@ -69,17 +132,33 @@ int main(int argc, char **argv) {
 		printf("Please enter your username: ");
 		fgets(username, MAXCHARS, stdin);
 		username[strlen(username) - 1] = '\0';
-		if (getpassword(password, fp, &oflags, &nflags) != 0) {
-			fprintf(stderr, "There was an error\n");
-			exit(1);
+		printf("Would you like to generate a password or enter your " 
+				"own password?\n(G) Generate\n(C) Create\n");
+		fgets(generate_create, MAXCHARS, stdin);
+		generate_create[strlen(generate_create) - 1] = '\0';
+		while (check_gen_or_create(generate_create)) {
+			printf("Enter a valid option:\n(G) Generate\n(C) "
+					 "Create");
+			fgets(generate_create, MAXCHARS, stdin);
+			generate_create[strlen(generate_create) - 1] = '\0';
+		
 		}
-	//	add_to_csv(domain, username, password, fp);
-		printf("Would you like to add another username/password?\
-				\n(1) Y\n(2) N\n");
+		if (toupper(generate_create[0]) == 'G') {
+			generate_password(password);
+		}
+		else {
+			if (getpassword(password, fp, &oflags, &nflags) != 0) {
+				fprintf(stderr, "There was an error\n");
+				exit(1);
+			}
+		}
+		add_to_csv(domain, username, password, fp);
+		printf("Would you like to add another username/password?"
+				"\n(Y) Yes\n(N) No\n");
 		fgets(yes_no, MAXCHARS, stdin);
 		yes_no[strlen(yes_no) - 1] = '\0';
 		while (check_yes_no(yes_no)) {
-			printf("Enter a valid option: \n(1) Y\n(2) N\n");
+			printf("Enter a valid option: \n(Y) Yes\n(N) No\n");
 			fgets(yes_no, MAXCHARS, stdin);
 			yes_no[strlen(yes_no) - 1] = '\0';
 		}
