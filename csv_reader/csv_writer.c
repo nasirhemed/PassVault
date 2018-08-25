@@ -77,7 +77,7 @@ void generate_password(char *password) {
 		i = 0;
 		while (i < max_length) {
 			random = arc4random_uniform(94) + 33;
-			password[i] = random;
+			password[i] = random == 44 ? random + 1: random;
 			i++;
 		}
 		password[i] = '\0';
