@@ -13,6 +13,34 @@
 #define MAXCHARS 256
 #define INTLENGTH 10
 
+int check_valid_password(char *password) {
+	if (strlen(password) == 0) {
+		return 1;
+	}
+	int num = 0;
+	int spec = 0;
+	int lcase = 0;
+	int ucase = 0;
+
+	for (int i = 0; i < strlen(password); i++) {
+		if (password[i] >= 65 && password[i] <= 90) {
+			ucase++;
+		}
+		else if (password[i] >= 97 && password[i] <= 122) {
+			lcase++;
+		}
+		else if (password[i] >= 48 && password[i] <= 57) {
+			num++;	
+		}
+		else { 
+			spec++;
+		}
+	}
+	int valid = num > 1 && spec > 1 && lcase > 3 && ucase > 3 ? 0 : 1;
+	return valid;
+
+}
+
 int check_yes_no(char *yes_no) {
 	int valid = strlen(yes_no) == 1 && (toupper(yes_no[0]) == 'Y'\
 			|| toupper(yes_no[0]) == 'N') ? 0 : 1;
@@ -39,26 +67,20 @@ void generate_password(char *password) {
 	else {
 		max_length = strtol(number_input, NULL, 10);
 	}
-	/** TODO: Work on the algorithm with constraints 
-	char lower_case[10];
-	char upper_case[10];
-	char number[10];
-	char random[10];
-
-	set_random(lower_case, "l");
-	set_random(upper_case, "u");
-	set_random(number, "n");
-	set_random(random, "r");
-	*/
-	int i = 0;
+	int i;
+	password[0] = '\0';
 	int random;
-	while (i < max_length) {
-		random = arc4random_uniform(94) + 33;
-		password[i] = random;
-		i++;
+	while (check_valid_password(password)) {
+		i = 0;
+		while (i < max_length) {
+			random = arc4random_uniform(94) + 33;
+			password[i] = random;
+			i++;
+		}
+		password[i] = '\0';
+		printf("Your password is %s\n", password);
+
 	}
-	password[i] = '\0';
-	printf("Your password is %s\n", password);
 }
 int getpassword(char *password, FILE *fp, struct termios *oflags, \
 		struct termios *nflags) {
@@ -163,7 +185,8 @@ int main(int argc, char **argv) {
 			yes_no[strlen(yes_no) - 1] = '\0';
 		}
 		if (toupper(yes_no[0]) == 'N') {
-			break;
+			fclose(fp);
+			exit(0);
 		}
 	}
 
