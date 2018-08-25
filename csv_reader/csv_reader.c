@@ -83,8 +83,8 @@ int main(int argc, char **argv) {
 	while (1) {
 
 		printf("Enter a record the domain that you are looking for:");	
-		scanf("%s", domain_name);
-
+		fgets(domain_name, MAXCHARS, stdin);
+		domain_name[strlen(domain_name) - 1] = '\0';
 		check_domain(domain_name, fp);
 	}
 	exit(0);
