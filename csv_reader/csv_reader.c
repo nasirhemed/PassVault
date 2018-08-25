@@ -43,6 +43,7 @@ void check_domain(char *domain_name, FILE *file) {
 	char password[MAXCHARS];
 
 	int character;
+	fseek(file, 0, SEEK_SET);
 	fgets(domain, MAXCHARS, file);
 	while (1) {
 		memset(domain, '\0', MAXCHARS);
@@ -69,7 +70,7 @@ void check_domain(char *domain_name, FILE *file) {
 
 int main(int argc, char **argv) {
 	if (argc != 2) {
-		fprintf(stderr, "Usage: csv_reader file");
+		fprintf(stderr, "Usage: csv_reader file\n");
 		exit(1);
 	}
 	FILE *fp = fopen(argv[1], "r");
@@ -79,9 +80,12 @@ int main(int argc, char **argv) {
 	}
 
 	char domain_name[MAXCHARS];
-	printf("Enter a record the domain that you are looking for:");	
-	scanf("%s", domain_name);
+	while (1) {
 
-	check_domain(domain_name, fp);
+		printf("Enter a record the domain that you are looking for:");	
+		scanf("%s", domain_name);
+
+		check_domain(domain_name, fp);
+	}
 	exit(0);
 }
