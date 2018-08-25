@@ -17,6 +17,9 @@ int check_valid_password(char *password) {
 	if (strlen(password) == 0) {
 		return 1;
 	}
+	else if (sizeof(password) < 10) {
+		return 0;
+	}
 	int num = 0;
 	int spec = 0;
 	int lcase = 0;
