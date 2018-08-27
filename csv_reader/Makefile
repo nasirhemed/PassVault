@@ -1,10 +1,22 @@
-FLAGS= -g -std=gnu99 
+
+CC=gcc
+CFLAGS=-Wall
+LIBS= -lwolfssl -lbsd
+OUT=CSV_Writer csv_reader aes-file-encrypt
+
 
 csv_reader: csv_reader.o
-	gcc ${FLAGS} $^ -o $@
+	$(CC) ${CFLAGS} $^ -o $@
 CSV_Writer: csv_writer.o
-	gcc ${FLAGS} $^ -o $@ -lbsd
+	$(CC) ${CFLAGS} $^ -o $@ $(LIBS)
 %.o: %.c
-	gcc ${FLAGS} -c $< -lbsd 
+	$(CC) ${CFLAGS} -c $< $(LIBS) 
+
+aes-file-encrypt: aes-file-encrypt.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) 
+
+.PHONY: clean
+
 clean:
-	rm -f *.o csv_reader CSV_Writer
+	rm -f *.o $(OUT)
+
