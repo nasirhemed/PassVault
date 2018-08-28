@@ -1,10 +1,12 @@
 /*
- * CSV Reader: This program reads entries from a CSV file.
+ * CSV Reader: This program reads entries from an encrypted CSV file.
  * The labels will be provided as stdin and the output will
  * be printed to stdout
  *
- * Note: The CSV file is of the form Domain name, Username, Password
- * Usage: csv_reader file
+ * Note: The CSV file is assumed to be of the form
+ * Domain name, Username, Password.
+ * The program will exit if the wrong password is entered.
+ * Usage: csv_encrypted_reader encrypted_file
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,10 +23,10 @@
 #define MAXCHARS 256
 
 /**
- * Given a char array and a CSV file pointer, set the string
- * to the cell the file pointer is currently at
+ * Given a char array and a CSV string pointer, set the string
+ * to the cell the string pointer is currently at
  *
- * Precondition: File is a CSV file that is comma seperated
+ * Precondition: String is of type CSV that is comma seperated
  */
 void set_string(char password[], char **pointer_string) {
 	char *str = password;
@@ -39,6 +41,11 @@ void set_string(char password[], char **pointer_string) {
 	*pointer_string = ++p;
 }
 
+/**
+ * Given a string, check if the header is of the valid CSV file:
+ * 	Domain name,Username,Password
+ * Return -1 if the file does not the header and 0 otherwise 
+ */ 
 int check_if_valid_csv(char *string) {
 	char toCheck[] = "Domain name,Username,Password";
 	for (int i = 0; i < strlen(toCheck); i++) {
@@ -51,7 +58,11 @@ int check_if_valid_csv(char *string) {
 
 
 /*
- * Decryptsr a file using AES
+ * Given a file and its key, decrypt the file and store the contents in 
+ * a string that is allocated in the heap. Make sure the string is freed 
+ * (char *out). The file is assumed to be an encrypted CSV file. If the key 
+ * is not correct, this function return -1. If there are any other errors, 
+ * -10** is returned. If successful, this function returns 0
  */
 int AesDecrypt(Aes* aes, byte* key, int size, FILE* inFile, char **out)
 {
@@ -92,8 +103,8 @@ int AesDecrypt(Aes* aes, byte* key, int size, FILE* inFile, char **out)
 	}
 
 	/* replicates old key if keys match */
-	ret = wc_PBKDF2(key, key, strlen((const char*)key), salt, SALT_SIZE, 4096,
-			size, SHA256);
+	ret = wc_PBKDF2(key, key, strlen((const char*)key), salt, SALT_SIZE, 
+			4096, size, SHA256);
 	if (ret != 0)
 		return -1050;
 
@@ -138,7 +149,7 @@ int AesDecrypt(Aes* aes, byte* key, int size, FILE* inFile, char **out)
 
 /**
  * Given a domain_name, check if the name is there in
- * the CSV file. If it is then output the username and
+ * the CSV string. If it is then output the username and
  * password. Otherwise, output no domain found
  *
  * Example of a domain name could be like Facebook, Twitter, etc
@@ -178,7 +189,8 @@ void check_domain(char *domain_name, char *csv_string) {
 }
 
 /*
- * temporarily disables echoing in terminal for secure key input
+ * Temporarily disable displaying the characters on the terminal to allow 
+ * the user to securely enter the password for decrypting the file.
  */
 int NoEcho(char* key, int size)
 {
