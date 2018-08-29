@@ -224,10 +224,12 @@ int AesEncrypt(Aes* aes, byte* key, int size, char *inputLines, FILE* outFile)
 	/* closes the opened files and frees the memory*/
 	memset(input, 0, length);
 	memset(output, 0, length);
-	// memset(key, 0, size);
+	memset(key, 0, size);
+	memset(inputLines, 0, strlen(inputLines));
+	free(inputLines);
 	free(input);
 	free(output);
-	// free(key);
+	free(key);
 	// fclose(inFile);
 	fclose(outFile);
 	wc_FreeRng(&rng);
