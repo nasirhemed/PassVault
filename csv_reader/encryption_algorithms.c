@@ -66,7 +66,6 @@ int AesEncrypt(Aes* aes, byte* key, int size, char *inputLines, FILE* outFile)
 
 	/* reads from inFile and wrties whatever is there to the input array */
 	// ret = fread(input, 1, inputLength, inFile);
-	printf("%s is my password for encryption\n", (char *)key);
 	strncpy((char *)input, inputLines, strlen(inputLines));
 
 	for (i = inputLength; i < length; i++) {
