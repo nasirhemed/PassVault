@@ -3,6 +3,7 @@
 #include <wolfssl/options.h>
 #include <wolfssl/wolfcrypt/aes.h>
 #include <wolfssl/wolfcrypt/sha256.h>
+#include <wolfssl/wolfcrypt/random.h>
 #include <wolfssl/wolfcrypt/pwdbased.h>
 
 
