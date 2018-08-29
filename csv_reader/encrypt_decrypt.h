@@ -6,7 +6,6 @@
 #include <wolfssl/wolfcrypt/random.h>
 #include <wolfssl/wolfcrypt/pwdbased.h>
 
-
 #define MAXCHARS 256
 #define KEYSIZE 256
 #define SALT_SIZE 8
