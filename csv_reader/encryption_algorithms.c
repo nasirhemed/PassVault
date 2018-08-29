@@ -3,11 +3,6 @@
 #include <termios.h>
 #include <ctype.h>
 #include <bsd/stdlib.h>
-#include <wolfssl/options.h>
-#include <wolfssl/wolfcrypt/aes.h>
-#include <wolfssl/wolfcrypt/sha256.h>
-#include <wolfssl/wolfcrypt/random.h>
-#include <wolfssl/wolfcrypt/pwdbased.h>
 
 #include "encrypt_decrypt.h"
 
