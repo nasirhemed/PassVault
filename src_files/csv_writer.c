@@ -10,7 +10,9 @@
 #include <termios.h>
 #include <ctype.h>
 #include <bsd/stdlib.h>
-#define MAXCHARS 256
+#include "encrypt_decrypt.h"
+#include "csv_writer.h"
+
 #define INTLENGTH 10
 
 int check_valid_password(char *password) {
@@ -33,9 +35,9 @@ int check_valid_password(char *password) {
 			lcase++;
 		}
 		else if (password[i] >= 48 && password[i] <= 57) {
-			num++;	
+			num++;
 		}
-		else { 
+		else {
 			spec++;
 		}
 	}
@@ -85,36 +87,28 @@ void generate_password(char *password) {
 
 	}
 }
-int getpassword(char *password, FILE *fp, struct termios *oflags, \
-		struct termios *nflags) {
-	tcgetattr(fileno(stdin), oflags);
-	*nflags = *oflags;
-	nflags->c_lflag &= ~ECHO;
-	nflags->c_lflag |= ECHONL;
 
-	if (tcsetattr(fileno(stdin), TCSANOW, nflags) != 0) {
-		perror("tcsetattr");
-		exit(1);
-	}
-	printf("Enter your password: ");
-	fgets(password, MAXCHARS, stdin); 
-	password[strlen(password) - 1] = '\0';
-	printf("\n");
+void add_and_encrypt(char *filename, char *input_lines, Aes *aes, char *pass) {
+					FILE *out_file = fopen(filename, "w");
+					AesEncrypt(aes, (byte *) pass, 256, input_lines, out_file);
+					// Signature (Aes *aes, byte *pass, int size, char *inputLines, FILE *outFile)
+	//			add_and_encrypt(file, out, &aes, pass);
 
-	if (tcsetattr(fileno(stdin), TCSANOW, oflags) != 0) {
-		perror("tcsetattr");
-		exit(1);
-	}
-	return 0;
 }
 
-void add_to_csv(char *domain, char *username, char *password, FILE *fp) {
-	fputs(domain, fp);
-	fputc(',', fp);
-	fputs(username, fp);
-	fputc(',', fp);
-	fputs(password, fp);
-	fputc('\n', fp);
+void add_to_csv(char *domain, char *username, char *password, char **csv_string) {
+	int total = strlen(*csv_string) + strlen(domain) + strlen(username)\
+		    + strlen(password) + 4;
+	printf("BEFORE:\n\n%s\n\n", *csv_string);
+	*csv_string = realloc(*csv_string, total);
+	char *csv = *csv_string;
+	strcat(csv, "\n");
+	strcat(csv, domain);
+	strcat(csv, ",");
+	strcat(csv, username);
+	strcat(csv, ",");
+	strcat(csv, password);
+	printf("AFTER:\n\n%s\n\n", *csv_string)	;
 }
 
 void create_header(FILE *fp) {
@@ -124,73 +118,4 @@ void create_header(FILE *fp) {
 	fputc(',', fp);
 	fputs("Password", fp);
 	fputc('\n', fp);
-}
-
-int main(int argc, char **argv) {
-	struct termios oflags, nflags;
-	char file[MAXCHARS];
-	FILE *fp;
-	if (argc > 1) {
-		strncpy(file, argv[1], MAXCHARS -1);
-		fp = fopen(file, "a");
-	}
-	else {
-		printf("Enter the name of file you want to create: ");
-		fgets(file, MAXCHARS, stdin);
-		file[strlen(file) - 1] = '\0';
-		fp = fopen(file, "w");
-		create_header(fp);
-	}
-	if (fp == NULL) {
-		perror("fopen");
-		exit(1);
-	}
-	char yes_no[MAXCHARS];
-	char generate_create[MAXCHARS];
-	char domain[MAXCHARS];
-	char username[MAXCHARS];
-	char password[MAXCHARS];
-	while (1) {
-		printf("Please enter the domain name: ");
-		fgets(domain, MAXCHARS, stdin);
-		domain[strlen(domain) - 1] = '\0';
-		printf("Please enter your username: ");
-		fgets(username, MAXCHARS, stdin);
-		username[strlen(username) - 1] = '\0';
-		printf("Would you like to generate a password or enter your " 
-				"own password?\n(G) Generate\n(C) Create\n");
-		fgets(generate_create, MAXCHARS, stdin);
-		generate_create[strlen(generate_create) - 1] = '\0';
-		while (check_gen_or_create(generate_create)) {
-			printf("Enter a valid option:\n(G) Generate\n(C) "
-					 "Create");
-			fgets(generate_create, MAXCHARS, stdin);
-			generate_create[strlen(generate_create) - 1] = '\0';
-		
-		}
-		if (toupper(generate_create[0]) == 'G') {
-			generate_password(password);
-		}
-		else {
-			if (getpassword(password, fp, &oflags, &nflags) != 0) {
-				fprintf(stderr, "There was an error\n");
-				exit(1);
-			}
-		}
-		add_to_csv(domain, username, password, fp);
-		printf("Would you like to add another username/password?"
-				"\n(Y) Yes\n(N) No\n");
-		fgets(yes_no, MAXCHARS, stdin);
-		yes_no[strlen(yes_no) - 1] = '\0';
-		while (check_yes_no(yes_no)) {
-			printf("Enter a valid option: \n(Y) Yes\n(N) No\n");
-			fgets(yes_no, MAXCHARS, stdin);
-			yes_no[strlen(yes_no) - 1] = '\0';
-		}
-		if (toupper(yes_no[0]) == 'N') {
-			fclose(fp);
-			exit(0);
-		}
-	}
-
 }
