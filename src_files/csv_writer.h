@@ -2,7 +2,7 @@
 
 #define MAXCHARS 256
 
-void create_header(FILE *fp);
+void create_header(char *out);
 void add_to_csv(char *domain, char *username, char *password, char **csv_string);
 int check_valid_password(char *password);
 int check_yes_no(char *yes_no);

@@ -165,11 +165,8 @@ void add_to_csv(char *domain, char *username, char *password, char **csv_string)
 	printf("AFTER:\n\n%s\n\n", *csv_string)	;
 }
 
-void create_header(FILE *fp) {
-	fputs("Domain name", fp);
-	fputc(',', fp);
-	fputs("Username", fp);
-	fputc(',', fp);
-	fputs("Password", fp);
-	fputc('\n', fp);
+void create_header(char *out) {
+	out = malloc(30);
+	strcat(out, "Domain Name,Username,Password");
+	out[29] = '\0';
 }
