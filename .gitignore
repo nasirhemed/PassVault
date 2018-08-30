@@ -2,3 +2,5 @@
 wolfssl/*
 src/*
 *aes-file-encrypt.c*
+encryption_code/*
+*passwords.csv.aes
