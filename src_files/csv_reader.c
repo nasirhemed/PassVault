@@ -86,3 +86,14 @@ void read_inputs(char *domain_name, char *out) {
 		check_domain(domain_name, out);
 	}
 }
+
+void view_all_passwords(char *out) {
+	printf("%s\n", out);
+}
+
+void generate_password_file(char *out, char *filename) {
+	FILE *fp = fopen(filename, "w");
+	int size = strlen(out);
+	fwrite(out, 1, size, fp);
+
+}
