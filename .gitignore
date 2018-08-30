@@ -1,2 +1,4 @@
 *.o
 wolfssl/*
+src/*
+*aes-file-encrypt.c*
