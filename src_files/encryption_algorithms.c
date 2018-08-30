@@ -201,15 +201,24 @@ int AesDecrypt(Aes* aes, byte* key, int size, FILE* inFile, char **out)
 		length -= output[length-1];
 	}
 	output[length - 1] = '\0';
-	printf("%s\n", (unsigned char *)output);
+	// printf("%s\n", (unsigned char *)output);
 	if (check_if_valid_csv((char *)output) == -1) {
+		memset(input, 0, aSize);
+		memset(key, 0, size);
+		free(input);
+		free(key);
+		free(output);
+		fclose(inFile);
 		return -1;
 	}
 	*out = (char *)output;
+	printf("%s\n", *out);
 
 	/* closes the opened files and frees the memory*/
 	memset(input, 0, aSize);
 	memset(key, 0, size);
+	// memset(output, 0, aSize);
+	// free(output);
 	free(input);
 	free(key);
 	fclose(inFile);

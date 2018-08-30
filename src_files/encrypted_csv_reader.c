@@ -34,6 +34,8 @@ int main(int argc, char **argv) {
 	NoEcho(pass, KEYSIZE);
 	if (AesDecrypt(&aes,(byte *) pass, KEYSIZE, fp, &out) == -1) {
 		fprintf(stderr, "Invalid Password\n");
+		memset(domain_name, 0, MAXCHARS);
+		free(domain_name);
 		exit(1);
 	}
 	read_inputs(domain_name, out);

@@ -2,7 +2,7 @@
  * This program writes CSV entries of the form domain_name, username, password
  * to the CSV file provided by the argument. If there is no argument provided
  * then, it creates a CSV file and writes to it.
- * Usage: CSV_Writer <file>(optional)
+ * Usage: CSV_Writer <file>
  */
 #include <stdlib.h>
 #include <stdio.h>
@@ -37,5 +37,7 @@ int main(int argc, char **argv) {
 	}
 
 	appender_function(&out, &toEncrypt, decrypt_pass, argv[1]);
+	free(out);
+	exit(0);
 
 }
