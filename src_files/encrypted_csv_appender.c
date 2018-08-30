@@ -15,25 +15,17 @@
 #include "csv_writer.h"
 
 int main(int argc, char **argv) {
-	struct termios oflags, nflags;
-	char file[MAXCHARS];
 	FILE *fp;
-	if (argc > 1) {
-		strncpy(file, argv[1], MAXCHARS -1);
-		fp = fopen(file, "r");
+	if (argc != 2) {
+		fprintf(stderr, "%s\n", "Usage:\n encrypted_csv_appender filename");
+		exit(1);
 	}
-	else {
-		printf("Enter the name of file you want to create: ");
-		fgets(file, MAXCHARS, stdin);
-		file[strlen(file) - 1] = '\0';
-		fp = fopen(file, "w");
-		create_header(fp);
-	}
+	fp = fopen(argv[1], "r");
 	if (fp == NULL) {
 		perror("fopen");
 		exit(1);
 	}
-	Aes aes;
+	Aes aes, toEncrypt;
 	char *pass = malloc(256);
 	char *out;
 	char decrypt_pass[MAXCHARS];
@@ -44,53 +36,6 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	char yes_no[MAXCHARS];
-	char generate_create[MAXCHARS];
-	char domain[MAXCHARS];
-	char username[MAXCHARS];
-	char password[MAXCHARS];
-	while (1) {
-		printf("Please enter the domain name: ");
-		fgets(domain, MAXCHARS, stdin);
-		domain[strlen(domain) - 1] = '\0';
-		printf("Please enter your username: ");
-		fgets(username, MAXCHARS, stdin);
-		username[strlen(username) - 1] = '\0';
-		printf("Would you like to generate a password or enter your "
-				"own password?\n(G) Generate\n(C) Create\n");
-		fgets(generate_create, MAXCHARS, stdin);
-		generate_create[strlen(generate_create) - 1] = '\0';
-		while (check_gen_or_create(generate_create)) {
-			printf("Enter a valid option:\n(G) Generate\n(C) "
-					 "Create");
-			fgets(generate_create, MAXCHARS, stdin);
-			generate_create[strlen(generate_create) - 1] = '\0';
-
-		}
-		if (toupper(generate_create[0]) == 'G') {
-			generate_password(password);
-		}
-		else {
-			if (NoEcho(password, MAXCHARS) != 0) {
-				fprintf(stderr, "There was an error\n");
-				exit(1);
-			}
-		}
-		add_to_csv(domain, username, password, &out);
-		printf("Would you like to add another username/password?"
-				"\n(Y) Yes\n(N) No\n");
-		fgets(yes_no, MAXCHARS, stdin);
-		yes_no[strlen(yes_no) - 1] = '\0';
-		while (check_yes_no(yes_no)) {
-			printf("Enter a valid option: \n(Y) Yes\n(N) No\n");
-			fgets(yes_no, MAXCHARS, stdin);
-			yes_no[strlen(yes_no) - 1] = '\0';
-		}
-		if (toupper(yes_no[0]) == 'N') {
-			Aes lol;
-			add_and_encrypt(file, out, &lol, decrypt_pass);
-			exit(0);
-		}
-	}
+	appender_function(&out, &toEncrypt, decrypt_pass, argv[1]);
 
 }

@@ -15,6 +15,59 @@
 
 #define INTLENGTH 10
 
+
+void get_string(char *string) {
+	if (fgets(string, MAXCHARS, stdin) == NULL) {
+		printf("\n");
+		exit(1);
+	}
+	string[strlen(string) - 1] = '\0';
+}
+
+void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, char *file) {
+	char yes_no[MAXCHARS];
+	char generate_create[MAXCHARS];
+	char domain[MAXCHARS];
+	char username[MAXCHARS];
+	char password[MAXCHARS];
+	while (1) {
+		printf("Please enter the domain name: ");
+		get_string(domain);
+		printf("Please enter your username: ");
+		get_string(username);
+		printf("Would you like to generate a password or enter your "
+				"own password?\n(G) Generate\n(C) Create\n");
+		get_string(generate_create);
+		while (check_gen_or_create(generate_create)) {
+			printf("Enter a valid option:\n(G) Generate\n(C) "
+					 "Create");
+			get_string(generate_create);
+
+		}
+		if (toupper(generate_create[0]) == 'G') {
+			generate_password(password);
+		}
+		else {
+			if (NoEcho(password, MAXCHARS) != 0) {
+				fprintf(stderr, "There was an error\n");
+				exit(1);
+			}
+		}
+		add_to_csv(domain, username, password, out);
+		printf("Would you like to add another username/password?"
+				"\n(Y) Yes\n(N) No\n");
+		get_string(yes_no);
+		while (check_yes_no(yes_no)) {
+			printf("Enter a valid option: \n(Y) Yes\n(N) No\n");
+			get_string(yes_no);
+		}
+		if (toupper(yes_no[0]) == 'N') {
+			add_and_encrypt(file, *out, toEncrypt, decrypt_pass);
+			exit(0);
+		}
+	}
+}
+
 int check_valid_password(char *password) {
 	if (strlen(password) == 0) {
 		return 1;
