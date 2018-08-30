@@ -16,9 +16,10 @@
 #define INTLENGTH 10
 
 
-void get_string(char *string) {
+void get_string(char *string, char *out) {
 	if (fgets(string, MAXCHARS, stdin) == NULL) {
 		printf("\n");
+		memset(out, 0, strlen(out));
 		exit(1);
 	}
 	string[strlen(string) - 1] = '\0';
@@ -32,16 +33,16 @@ void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, char *fil
 	char password[MAXCHARS];
 	while (1) {
 		printf("Please enter the domain name: ");
-		get_string(domain);
+		get_string(domain, *out);
 		printf("Please enter your username: ");
-		get_string(username);
+		get_string(username, *out);
 		printf("Would you like to generate a password or enter your "
 				"own password?\n(G) Generate\n(C) Create\n");
-		get_string(generate_create);
+		get_string(generate_create, *out);
 		while (check_gen_or_create(generate_create)) {
 			printf("Enter a valid option:\n(G) Generate\n(C) "
 					 "Create");
-			get_string(generate_create);
+			get_string(generate_create, *out);
 
 		}
 		if (toupper(generate_create[0]) == 'G') {
@@ -56,10 +57,10 @@ void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, char *fil
 		add_to_csv(domain, username, password, out);
 		printf("Would you like to add another username/password?"
 				"\n(Y) Yes\n(N) No\n");
-		get_string(yes_no);
+		get_string(yes_no, *out);
 		while (check_yes_no(yes_no)) {
 			printf("Enter a valid option: \n(Y) Yes\n(N) No\n");
-			get_string(yes_no);
+			get_string(yes_no, *out);
 		}
 		if (toupper(yes_no[0]) == 'N') {
 			add_and_encrypt(file, *out, toEncrypt, decrypt_pass);
