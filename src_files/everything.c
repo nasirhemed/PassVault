@@ -23,7 +23,8 @@ int main(int argc, char **argv) {
 		case 'c':
 			create_csv_file();
 			break;
-		case 'r':
+		case 'r': 
+			read_csv_file();
 			break;
 		case 'w':
 			break;

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "csv_reader.h"
+#include "encrypt_decrypt.h"
 
 
 /**
@@ -64,6 +65,26 @@ void check_domain(char *domain_name, char *csv_string) {
 	}
 
 }
+
+void read_csv_file() {
+	char *username = malloc(MAXCHARS);
+	char *password = malloc(MAXCHARS);
+	Aes aes;
+	char *domain_name = malloc(MAXCHARS);
+	char *out;
+	FILE *inFile;
+	printf("Enter your username: ");
+	get_string(username, NULL);
+	NoEcho(password, KEYSIZE);
+	if ((inFile = fopen(username, "r")) == NULL) {
+		fprintf(stderr, "Error: Username doesn't exist\n");
+		exit(1);
+	}	
+	AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out);
+	read_inputs(domain_name, out);
+	free(domain_name); free(out); free(username); 
+}
+
 /**
 	* This function reads inputs from stdin and prints
 	* whether the record is in the string out
