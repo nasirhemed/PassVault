@@ -10,7 +10,6 @@
 #include "csv_reader.h"
 
 int main(int argc, char **argv) {
-	FILE *fp;
 	char options;
 	if((options = getopt(argc, argv, "gcrw")) == -1 || options == '?') {
 		fprintf(stderr, "Usage\neverything -g -c -r -w\n");
@@ -22,13 +21,10 @@ int main(int argc, char **argv) {
 			generate_csv_file();
 			break;
 		case 'c':
-			create_csv_file();
 			break;
 		case 'r':
-			read_csv_file();
 			break;
 		case 'w':
-			append_csv_file();
 			break;
 		}
 	exit(0);

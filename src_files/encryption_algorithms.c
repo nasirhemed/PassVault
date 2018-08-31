@@ -29,7 +29,7 @@ int GenerateKey(RNG* rng, byte* key, int size, byte* salt, int pad)
 /*
  * Encrypts a file using AES
  */
- // Signature (Aes *aes, byte *pass, int size, char *inputLines, FILE *outFile)
+// Signature (Aes *aes, byte *pass, int size, char *inputLines, FILE *outFile)
 int AesEncrypt(Aes* aes, byte* key, int size, char *inputLines, FILE* outFile)
 {
 	RNG     rng;
@@ -255,5 +255,85 @@ int NoEcho(char* key, int size)
 		printf("Error\n");
 		return -1070;
 	}
+	return 0;
+}
+int decrypt_file(Aes *aes, byte *key, int size, FILE *inFile, FILE *outFile) {
+
+	RNG     rng;
+	byte    iv[AES_BLOCK_SIZE];
+	byte*   input;
+	byte*   output;
+	byte    salt[SALT_SIZE] = {0};
+
+	int     i = 0;
+	int     ret = 0;
+	int     length;
+	int     aSize;
+
+	fseek(inFile, 0, SEEK_END);
+	length = ftell(inFile);
+	fseek(inFile, 0, SEEK_SET);
+	aSize = length;
+
+	input = malloc(aSize);
+	output = malloc(aSize);
+
+	wc_InitRng(&rng);
+
+	/* reads from inFile and wrties whatever is there to the input array */
+	ret = fread(input, 1, length, inFile);
+	if (ret == 0) {
+		printf("Input file does not exist.\n");
+		return -1010;
+	}
+	for (i = 0; i < SALT_SIZE; i++) {
+		/* finds salt from input message */
+		salt[i] = input[i];
+	}
+	for (i = SALT_SIZE; i < AES_BLOCK_SIZE + SALT_SIZE; i++) {
+		/* finds iv from input message */
+		iv[i - SALT_SIZE] = input[i];
+	}
+
+	/* replicates old key if keys match */
+	ret = wc_PBKDF2(key, key, strlen((const char*)key), salt, SALT_SIZE, 4096,
+			size, SHA256);
+	if (ret != 0)
+		return -1050;
+
+	/* sets key */
+	ret = wc_AesSetKey(aes, key, AES_BLOCK_SIZE, iv, AES_DECRYPTION);
+	if (ret != 0)
+		return -1002;
+
+	/* change length to remove salt/iv block from being decrypted */
+	length -= (AES_BLOCK_SIZE + SALT_SIZE);
+	for (i = 0; i < length; i++) {
+		/* shifts message: ignores salt/iv on message*/
+		input[i] = input[i + (AES_BLOCK_SIZE + SALT_SIZE)];
+	}
+	/* decrypts the message to output based on input length + padding*/
+	ret = wc_AesCbcDecrypt(aes, output, input, length);
+	if (ret != 0)
+		return -1006;
+
+	if (salt[0] != 0) {
+		/* reduces length based on number of padded elements */
+		length -= output[length-1];
+	}
+	/* writes output to the outFile based on shortened length */
+	fwrite(output, 1, length, outFile);
+
+	/* closes the opened files and frees the memory*/
+	memset(input, 0, aSize);
+	memset(output, 0, aSize);
+	memset(key, 0, size);
+	free(input);
+	free(output);
+	free(key);
+	fclose(inFile);
+	fclose(outFile);
+	wc_FreeRng(&rng);
+
 	return 0;
 }

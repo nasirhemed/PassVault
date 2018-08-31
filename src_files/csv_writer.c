@@ -19,13 +19,36 @@
 void get_string(char *string, char *out) {
 	if (fgets(string, MAXCHARS, stdin) == NULL) {
 		printf("\n");
-		memset(out, 0, strlen(out));
+		if (out != NULL) {
+			memset(out, 0, strlen(out));
+			free(out);
+		}
 		exit(1);
 	}
 	string[strlen(string) - 1] = '\0';
 }
 
-void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, char *file) {
+void generate_csv_file() {
+	FILE *inFile;
+	FILE *outFile;
+	char *username = malloc(MAXCHARS);
+	char *password = malloc(KEYSIZE);
+	char *output_path = malloc(MAXCHARS);
+	Aes aes_struct;
+	printf("Enter the username: ");
+	get_string(username, NULL);
+	NoEcho(password, KEYSIZE);
+	inFile = fopen(username, "r"); //TODO: Make changes with path variable
+	printf("Enter the path to store the csv file: ");
+	get_string(output_path, NULL);
+	outFile = fopen(output_path, "w");
+	decrypt_file(&aes_struct, (byte *)password, KEYSIZE, inFile, outFile);
+	free(username); free(output_path);
+	exit(0);
+}
+
+void appender_function(char **out, Aes *toEncrypt,\
+		char *decrypt_pass, char *file) {
 	char yes_no[MAXCHARS];
 	char generate_create[MAXCHARS];
 	char domain[MAXCHARS];
@@ -41,7 +64,7 @@ void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, char *fil
 		get_string(generate_create, *out);
 		while (check_gen_or_create(generate_create)) {
 			printf("Enter a valid option:\n(G) Generate\n(C) "
-					 "Create");
+					"Create");
 			get_string(generate_create, *out);
 
 		}
@@ -118,7 +141,7 @@ void generate_password(char *password) {
 	int max_length;
 	char number_input[INTLENGTH];
 	printf("Enter the maximum length of your password. (Press enter if you"
-		" don't want to specify maximum charaters): ");
+			" don't want to specify maximum charaters): ");
 	fgets(number_input, INTLENGTH, stdin);
 	if (number_input[0] == '\n') {
 		max_length = arc4random_uniform(10) + 10;
@@ -143,17 +166,15 @@ void generate_password(char *password) {
 }
 
 void add_and_encrypt(char *filename, char *input_lines, Aes *aes, char *pass) {
-					FILE *out_file = fopen(filename, "w");
-					AesEncrypt(aes, (byte *) pass, 256, input_lines, out_file);
-					// Signature (Aes *aes, byte *pass, int size, char *inputLines, FILE *outFile)
-	//			add_and_encrypt(file, out, &aes, pass);
+	FILE *out_file = fopen(filename, "w");
+	AesEncrypt(aes, (byte *) pass, 256, input_lines, out_file);
 
 }
 
-void add_to_csv(char *domain, char *username, char *password, char **csv_string) {
+void add_to_csv(char *domain, char *username, char *password,\
+		char **csv_string) {
 	int total = strlen(*csv_string) + strlen(domain) + strlen(username)\
 		    + strlen(password) + 4;
-	printf("BEFORE:\n\n%s\n\n", *csv_string);
 	*csv_string = realloc(*csv_string, total);
 	char *csv = *csv_string;
 	strcat(csv, "\n");
@@ -162,7 +183,6 @@ void add_to_csv(char *domain, char *username, char *password, char **csv_string)
 	strcat(csv, username);
 	strcat(csv, ",");
 	strcat(csv, password);
-	printf("AFTER:\n\n%s\n\n", *csv_string)	;
 }
 
 void create_header(char *out) {

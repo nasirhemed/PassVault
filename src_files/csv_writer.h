@@ -12,7 +12,7 @@ void add_and_encrypt(char *filename, char *input_lines, Aes *aes, char *pass);
 void get_string(char *string, char *out);
 void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, \
 		char *file);
-void generate_csv_file(char *username, char *password);
+void generate_csv_file();
 
 #define CSV_WRITER_H_
 #endif

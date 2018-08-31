@@ -15,4 +15,5 @@ int AesDecrypt(Aes *aes, byte *key, int size, FILE *inFile, char **out);
 int GenerateKey(RNG *rng, byte *key, int size, byte *salt, int pad);
 int NoEcho(char* key, int size);
 int check_if_valid_csv(char *string);
+int decrypt_file(Aes *aes, byte *key, int size, FILE *inFile, FILE *outFile);
 #endif
