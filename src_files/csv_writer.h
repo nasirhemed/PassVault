@@ -10,7 +10,9 @@ int check_gen_or_create(char *gen_cre);
 void generate_password(char *password);
 void add_and_encrypt(char *filename, char *input_lines, Aes *aes, char *pass);
 void get_string(char *string, char *out);
-void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, char *file);
+void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, \
+		char *file);
+void generate_csv_file(char *username, char *password);
 
 #define CSV_WRITER_H_
 #endif
