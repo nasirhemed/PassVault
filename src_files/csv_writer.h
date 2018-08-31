@@ -14,6 +14,7 @@ void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, \
 		char *file);
 void generate_csv_file();
 void create_csv_file();
+void add_to_csv_file();
 
 #define CSV_WRITER_H_
 #endif

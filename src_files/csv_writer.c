@@ -69,6 +69,25 @@ void generate_csv_file() {
 	exit(0);
 }
 
+void add_to_csv_file() {
+	char *username = malloc(MAXCHARS);
+	char *password = malloc(MAXCHARS);
+	Aes aes, toEncrypt;
+	char *password_copy = malloc(MAXCHARS);
+	char *out;
+	FILE *inFile;
+	printf("Enter your username: ");
+	get_string(username, NULL);
+	NoEcho(password, KEYSIZE);
+	strcpy(password_copy, password);
+	if ((inFile = fopen(username, "r")) == NULL) {
+		fprintf(stderr, "Error: Username doesn't exist\n");
+		exit(1);
+	}	
+	AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out);
+	appender_function(&out, &toEncrypt, password, username);
+}
+
 void appender_function(char **out, Aes *toEncrypt,\
 		char *decrypt_pass, char *file) {
 	char yes_no[MAXCHARS];

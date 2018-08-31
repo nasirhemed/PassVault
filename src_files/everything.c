@@ -27,6 +27,7 @@ int main(int argc, char **argv) {
 			read_csv_file();
 			break;
 		case 'w':
+			add_to_csv_file();
 			break;
 		}
 	exit(0);
