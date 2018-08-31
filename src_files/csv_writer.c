@@ -28,6 +28,28 @@ void get_string(char *string, char *out) {
 	string[strlen(string) - 1] = '\0';
 }
 
+void create_csv_file() {
+	char *username = malloc(MAXCHARS);
+	char *password = malloc(MAXCHARS);
+	char *password_verification = malloc(MAXCHARS);
+	char *out;
+	Aes aes;
+	printf("Enter your username: ");
+	get_string(username, NULL);
+	NoEcho(password, KEYSIZE);
+	NoEcho(password_verification, KEYSIZE);
+	while (strcmp(password, password_verification) != 0) {
+		printf("Please try again.");
+		NoEcho(password, KEYSIZE);
+		NoEcho(password_verification, KEYSIZE);
+	}
+	printf("%s is password and %s is password verificaiton\n", password, \
+			password_verification);
+	create_header(&out);
+	add_and_encrypt(username, out, &aes, password);
+	free (username); free(password_verification);
+}
+
 void generate_csv_file() {
 	FILE *inFile;
 	FILE *outFile;
@@ -185,8 +207,8 @@ void add_to_csv(char *domain, char *username, char *password,\
 	strcat(csv, password);
 }
 
-void create_header(char *out) {
-	out = malloc(30);
-	strcat(out, "Domain Name,Username,Password");
-	out[29] = '\0';
+void create_header(char **out) {
+	*out = malloc(30);
+	strcat(*out, "Domain Name,Username,Password");
+	(*out)[29] = '\0';
 }

@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
 			generate_csv_file();
 			break;
 		case 'c':
+			create_csv_file();
 			break;
 		case 'r':
 			break;

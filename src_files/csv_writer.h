@@ -2,7 +2,7 @@
 
 #define MAXCHARS 256
 
-void create_header(char *out);
+void create_header(char **out);
 void add_to_csv(char *domain, char *username, char *password, char **csv_string);
 int check_valid_password(char *password);
 int check_yes_no(char *yes_no);
@@ -13,6 +13,7 @@ void get_string(char *string, char *out);
 void appender_function(char **out, Aes *toEncrypt, char *decrypt_pass, \
 		char *file);
 void generate_csv_file();
+void create_csv_file();
 
 #define CSV_WRITER_H_
 #endif
