@@ -246,7 +246,7 @@ int NoEcho(char* key, int size)
 		return -1060;
 	}
 
-	printf("Unique Password: ");
+	printf("Enter your password: ");
 	fgets(key, size, stdin);
 	key[strlen(key) - 1] = 0;
 	printf("\n");
