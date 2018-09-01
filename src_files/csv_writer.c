@@ -84,7 +84,10 @@ void add_to_csv_file() {
 		fprintf(stderr, "Error: Username doesn't exist\n");
 		exit(1);
 	}	
-	AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out);
+	if (AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out) == -1) {
+		fprintf(stderr, "Invalid Password\n");
+		exit(1);
+	}
 	appender_function(&out, &toEncrypt, password_copy, username);
 }
 
@@ -228,6 +231,6 @@ void add_to_csv(char *domain, char *username, char *password,\
 
 void create_header(char **out) {
 	*out = malloc(30);
-	strcat(*out, "Domain Name,Username,Password");
+	strcat(*out, "Domain name,Username,Password");
 	(*out)[29] = '\0';
 }
