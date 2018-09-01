@@ -85,11 +85,11 @@ void add_to_csv_file() {
 		exit(1);
 	}	
 	AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out);
-	appender_function(&out, &toEncrypt, password, username);
+	appender_function(&out, &toEncrypt, password_copy, username);
 }
 
 void appender_function(char **out, Aes *toEncrypt,\
-		char *decrypt_pass, char *file) {
+	char *decrypt_pass, char *file) {
 	char yes_no[MAXCHARS];
 	char generate_create[MAXCHARS];
 	char domain[MAXCHARS];
