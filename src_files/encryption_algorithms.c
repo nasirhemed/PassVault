@@ -321,6 +321,7 @@ int decrypt_file(Aes *aes, byte *key, int size, FILE *inFile, FILE *outFile) {
 		/* reduces length based on number of padded elements */
 		length -= output[length-1];
 	}
+	*(output + length - 1) = '\n';
 	/* writes output to the outFile based on shortened length */
 	fwrite(output, 1, length, outFile);
 
