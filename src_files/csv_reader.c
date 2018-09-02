@@ -73,16 +73,22 @@ void read_csv_file() {
 	char *domain_name = malloc(MAXCHARS);
 	char *out;
 	FILE *inFile;
+	char *path;
+	if ((path = getenv("PassFolders")) == NULL) {
+		perror("getenv");
+		exit(1);
+	}
+	strcpy(username, path);
 	printf("Enter your username: ");
-	get_string(username, NULL);
+	get_string(username + strlen(username), NULL);
 	NoEcho(password, KEYSIZE);
 	if ((inFile = fopen(username, "r")) == NULL) {
 		fprintf(stderr, "Error: Username doesn't exist\n");
 		exit(1);
-	}	
+	}
 	AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out);
 	read_inputs(domain_name, out);
-	free(domain_name); free(out); free(username); 
+	free(domain_name); free(out); free(username);
 }
 
 /**

@@ -34,8 +34,14 @@ void create_csv_file() {
 	char *password_verification = malloc(MAXCHARS);
 	char *out;
 	Aes aes;
+	char *path;
+	if ((path = getenv("PassFolders")) == NULL) {
+		perror("getenv");
+		exit(1);
+	}
+	strcpy(username, path);
 	printf("Enter your username: ");
-	get_string(username, NULL);
+	get_string(username + strlen(username), NULL);
 	NoEcho(password, KEYSIZE);
 	NoEcho(password_verification, KEYSIZE);
 	while (strcmp(password, password_verification) != 0) {
@@ -57,8 +63,14 @@ void generate_csv_file() {
 	char *password = malloc(KEYSIZE);
 	char *output_path = malloc(MAXCHARS);
 	Aes aes_struct;
-	printf("Enter the username: ");
-	get_string(username, NULL);
+	char *path;
+	if ((path = getenv("PassFolders")) == NULL) {
+		perror("getenv");
+		exit(1);
+	}
+	strcpy(username, path);
+	printf("Enter your username: ");
+	get_string(username + strlen(username), NULL);
 	NoEcho(password, KEYSIZE);
 	inFile = fopen(username, "r"); //TODO: Make changes with path variable
 	printf("Enter the path to store the csv file: ");
@@ -76,14 +88,20 @@ void add_to_csv_file() {
 	char *password_copy = malloc(MAXCHARS);
 	char *out;
 	FILE *inFile;
+	char *path;
+	if ((path = getenv("PassFolders")) == NULL) {
+		perror("getenv");
+		exit(1);
+	}
+	strcpy(username, path);
 	printf("Enter your username: ");
-	get_string(username, NULL);
+	get_string(username + strlen(username), NULL);
 	NoEcho(password, KEYSIZE);
 	strcpy(password_copy, password);
 	if ((inFile = fopen(username, "r")) == NULL) {
 		fprintf(stderr, "Error: Username doesn't exist\n");
 		exit(1);
-	}	
+	}
 	if (AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out) == -1) {
 		fprintf(stderr, "Invalid Password\n");
 		exit(1);
