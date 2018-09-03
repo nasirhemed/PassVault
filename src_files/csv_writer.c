@@ -16,6 +16,11 @@
 #define INTLENGTH 10
 
 
+/**
+ * Given a string, store the standard input in the
+ * string "string". If EOF is entered, free out and exit with
+ * exit status 1
+ */ 
 void get_string(char *string, char *out) {
 	if (fgets(string, MAXCHARS, stdin) == NULL) {
 		printf("\n");
@@ -28,6 +33,11 @@ void get_string(char *string, char *out) {
 	string[strlen(string) - 1] = '\0';
 }
 
+/**
+ * Option c from ./everything
+ * This function creates a new encrypted CSV file for the user
+ * It asks for the username and password verification
+ */ 
 void create_csv_file() {
 	char *username = malloc(MAXCHARS);
 	char *password = malloc(MAXCHARS);
@@ -56,6 +66,12 @@ void create_csv_file() {
 	free (username); free(password_verification);
 }
 
+/**
+ * Option -g from ./everything
+ *
+ * This function takes in the username and password
+ * and decrypts the password file to an actual csv file
+ */ 
 void generate_csv_file() {
 	FILE *inFile;
 	FILE *outFile;
@@ -81,6 +97,13 @@ void generate_csv_file() {
 	exit(0);
 }
 
+/**
+ * Option w from ./everything
+ * 
+ * This function takes the username and the password
+ * If successful login, the user will be able to add passwords
+ * to his csv file
+ */ 
 void add_to_csv_file() {
 	char *username = malloc(MAXCHARS);
 	char *password = malloc(MAXCHARS);
@@ -109,6 +132,10 @@ void add_to_csv_file() {
 	appender_function(&out, &toEncrypt, password_copy, username);
 }
 
+/**
+ * This function takes in domain, username and asks to generate or create
+ * password. It then stores the credentials in the encrypted CSV file
+ */ 
 void appender_function(char **out, Aes *toEncrypt,\
 	char *decrypt_pass, char *file) {
 	char yes_no[MAXCHARS];
@@ -154,6 +181,13 @@ void appender_function(char **out, Aes *toEncrypt,\
 	}
 }
 
+/**
+ * Given a string, check if it could be a valid password.
+ * i.e: If a string has less than ten characters or the following:
+ *
+ * If it has at least 1 digit, 1 special character, 3 lowercase letters
+ * and 3 upper case letters
+ */ 
 int check_valid_password(char *password) {
 	if (strlen(password) == 0) {
 		return 1;
@@ -185,13 +219,18 @@ int check_valid_password(char *password) {
 
 }
 
+/**
+ * Given a string, check whether it is "Y" or "N" (Case doesn't matter)
+ */ 
 int check_yes_no(char *yes_no) {
 	int valid = strlen(yes_no) == 1 && (toupper(yes_no[0]) == 'Y'\
 			|| toupper(yes_no[0]) == 'N') ? 0 : 1;
 	return valid;
 
 }
-
+/**
+ * Given a string, check whether it is "G" or "C" (Case doesn't matter)
+ */ 
 int check_gen_or_create(char *gen_cre) {
 	int valid = strlen(gen_cre) == 1 && \
 		    (toupper(gen_cre[0]) == 'G' || toupper(gen_cre[0]) == 'C')\
@@ -199,6 +238,10 @@ int check_gen_or_create(char *gen_cre) {
 	return valid;
 }
 
+/**
+ * Generate a valid password based on the length of the password.
+ * The length of the password will be taken from the standard input
+ */ 
 void generate_password(char *password) {
 	int max_length;
 	char number_input[INTLENGTH];
@@ -227,12 +270,19 @@ void generate_password(char *password) {
 	}
 }
 
+/**
+ * Given a filename, csv input lines, Aes struct and the password, encrypt the
+ * csv input lines and store it in a file "filename"
+ */ 
 void add_and_encrypt(char *filename, char *input_lines, Aes *aes, char *pass) {
 	FILE *out_file = fopen(filename, "w");
 	AesEncrypt(aes, (byte *) pass, 256, input_lines, out_file);
 
 }
 
+/**
+ * Given a domain name, username, password, add it to the csv_string
+ */ 
 void add_to_csv(char *domain, char *username, char *password,\
 		char **csv_string) {
 	int total = strlen(*csv_string) + strlen(domain) + strlen(username)\
@@ -247,6 +297,10 @@ void add_to_csv(char *domain, char *username, char *password,\
 	strcat(csv, password);
 }
 
+/**
+ * Given a uninitialzed string, create a csv_header
+ * Domain name,Username,Password
+ */ 
 void create_header(char **out) {
 	*out = malloc(30);
 	strcat(*out, "Domain name,Username,Password");
