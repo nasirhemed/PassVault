@@ -24,3 +24,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. Wolfssd for AES-256 encryption/decryption algorithms
 2. libsdd for a proper random generator in C.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
