@@ -6,6 +6,15 @@ access to your passwords by letting the program know which domain you want to ac
 The goal of this program is to encourage you to remember only one strong password for decrypting
 the file and generate passwords for your domains so that you can remain safe.
 
+## Usage
+Once you create an account using `vault -c`, you can do the following:
+
+* If you want to add your own passwords or generated passwords then type the command `vault -w`.
+* If you want to see the passwords you stored, you type the command `vault -r` and type the domain that you are looking for.
+* If you want to generate your password file into a readable CSV file, then type `vault -g` (**Note: If you generate the CSV file, then all your passwords will be visible.**)
+* If you want to create another account, then simply type the command `vault -c` again and use a different username
+
+
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine.
 
