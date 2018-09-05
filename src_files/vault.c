@@ -12,7 +12,7 @@
 int main(int argc, char **argv) {
 	char options;
 	if((options = getopt(argc, argv, "gcrw")) == -1 || options == '?') {
-		fprintf(stderr, "Usage\neverything -g -c -r -w\n");
+		fprintf(stderr, "Usage\nvault -g -c -r -w\n");
 		exit(1);
 	}
 	printf("The option chosen was %c\n", options);
