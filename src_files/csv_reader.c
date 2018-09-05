@@ -86,7 +86,10 @@ void read_csv_file() {
 		fprintf(stderr, "Error: Username doesn't exist\n");
 		exit(1);
 	}
-	AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out);
+	if (AesDecrypt(&aes, (byte *)password, KEYSIZE, inFile, &out) == -1) {
+		fprintf(stderr, "%s\n", "Invalid Password");
+		exit(1);
+	}
 	read_inputs(domain_name, out);
 	free(domain_name); free(out); free(username);
 }
