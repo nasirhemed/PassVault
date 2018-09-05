@@ -27,7 +27,7 @@ fi
 echo $PassFolders
 if test -e $PassFolders
 then
-	echo excellent > /dev/null/
+	echo excellent > /dev/null
 else
 	echo "Directory not found. Creating directory"
 	mkdir "$PassFolders"
@@ -38,8 +38,7 @@ else
 fi
 echo $PassFolders
 
-echo 'export $PassFolders' >> ~/.bashrc
-git clone https://github.com/wolfSSL/wolfssl.git
+echo "export PassFolders=$PassFolders" >> ~/.bashrc
 cd wolfssl
 ./configure --enable-pwdbased --enable-dtls
 make
@@ -47,7 +46,7 @@ make install
 cd ..
 make
 cp src_files/vault "$PassFolders"
-echo "#Add vault to the path"
+echo "#Add vault to the path" >> ~/.bashrc
 echo 'export PATH=$PATH:$PassFolders' >> ~/.bashrc
 source ~/.bashrc
 echo "You should then be ready to use the program."
