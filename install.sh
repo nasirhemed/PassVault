@@ -38,7 +38,7 @@ else
 fi
 echo $PassFolders
 
-export PassFolders
+echo 'export $PassFolders' >> ~/.bashrc
 git clone https://github.com/wolfSSL/wolfssl.git
 cd wolfssl
 ./configure --enable-pwdbased --enable-dtls
@@ -46,8 +46,8 @@ make
 make install
 cd ..
 make
-cp src_files/everything "$PassFolders"
-echo "We're almost done installing. Please go to your bashrc file add the "\
-	"following line"
-echo "export PATH=$PATH:\"$PassFolders/everything\""
+cp src_files/vault "$PassFolders"
+echo "#Add vault to the path"
+echo 'export PATH=$PATH:$PassFolders' >> ~/.bashrc
+source ~/.bashrc
 echo "You should then be ready to use the program."
