@@ -2,7 +2,7 @@ currDir="$(pwd)"
 
 if ! dpkg -s libbsd-dev > /dev/null || ! dpkg -s git > /dev/null
 then
-	echo Please install libssd-dev before running this script
+	echo Please install libbsd-dev before running this script
 	exit 1
 fi
 
