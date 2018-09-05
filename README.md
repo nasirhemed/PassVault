@@ -19,7 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
 1. Clone the repository in a directory by the following command: `git clone https://github.com/nasirhemed/PassVault.git`
 2. Download [wolfSSL](https://www.wolfssl.com/download/) and place the directory `wolfssl` in the directory you cloned PassVault
 3. Run `./install.sh`
-4. Run passvault -c and enter your username and password
+4. Run vault -c and enter your username and password
 
 ## Dependencies
 
