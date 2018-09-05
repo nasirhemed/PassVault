@@ -32,8 +32,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Dependencies
 
-1. [wolfSSL](https://www.wolfssl.com) for AES-256 encryption/decryption algorithms
-2. [libBSD](https://github.com/LuaDist/libbsd) for a proper random generator in C.
+* [wolfSSL](https://www.wolfssl.com) for AES-256 encryption/decryption algorithms
+* [libBSD](https://github.com/LuaDist/libbsd) for a proper random generator in C.
 
 ## License
 
