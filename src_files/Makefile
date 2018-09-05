@@ -3,9 +3,9 @@ CC=gcc
 CFLAGS=-Wall
 LIBS= -lwolfssl -lbsd
 OUT=CSV_Writer csv_reader aes-file-encrypt encrypted_csv_reader\
-    encrypted_csv_appender everything
+    encrypted_csv_appender vault
 
-everything: everything.o encryption_algorithms.o csv_writer.o csv_reader.o
+vault: vault.o encryption_algorithms.o csv_writer.o csv_reader.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 encrypted_csv_appender: encrypted_csv_appender.o encryption_algorithms.o csv_writer.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
