@@ -59,8 +59,6 @@ void create_csv_file() {
 		NoEcho(password, KEYSIZE);
 		NoEcho(password_verification, KEYSIZE);
 	}
-	printf("%s is password and %s is password verificaiton\n", password, \
-			password_verification);
 	create_header(&out);
 	add_and_encrypt(username, out, &aes, password);
 	free (username); free(password_verification);

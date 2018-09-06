@@ -15,7 +15,6 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Usage\nvault -g -c -r -w\n");
 		exit(1);
 	}
-	printf("The option chosen was %c\n", options);
 	switch(options) {
 		case 'g':
 			generate_csv_file();
