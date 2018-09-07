@@ -3,6 +3,9 @@ PassVault is a password manager that securely stores your passwords in an encryp
 The file is a CSV file encrypted using AES-256 and can be only opened by a key (Which is going to be your master password.). Once you decrypt the file, you can have
 access to your passwords by letting the program know which domain you want to access. You can also add and generate passwords for your other domains.
 
+![2018-09-06_22-09-27](https://user-images.githubusercontent.com/33851317/45194841-d0696380-b222-11e8-9af8-2e70044aa667.gif)
+
+
 The goal of this program is to encourage you to remember only one strong password for decrypting
 the file and generate passwords for your domains so that you can remain safe.
 
