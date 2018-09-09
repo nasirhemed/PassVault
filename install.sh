@@ -44,10 +44,10 @@ cd wolfssl
 make
 make install
 cd src/.libs
-sudo ln -s libwolfssl.la /usr/lib/
-sudo ln -s libwolfssl.so /usr/lib
-sudo ln -s libwolfssl.so.18 /usr/lib
-sudo ln -s libwolfssl.so.18.0.0 /usr/lib
+sudo cp libwolfssl.la /usr/lib/
+sudo cp libwolfssl.so /usr/lib
+sudo cp libwolfssl.so.18 /usr/lib
+sudo cp libwolfssl.so.18.0.0 /usr/lib
 cd ../../../
 make
 cp src_files/vault "$PassFolders"
