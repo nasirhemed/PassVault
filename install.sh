@@ -43,7 +43,12 @@ cd wolfssl
 ./configure --enable-pwdbased --enable-dtls
 make
 make install
-cd ..
+cd src/.libs
+sudo ln -s libwolfssl.la /usr/lib/
+sudo ln -s libwolfssl.so /usr/lib
+sudo ln -s libwolfssl.so.18 /usr/lib
+sudo ln -s libwolfssl.so.18.0.0 /usr/lib
+cd ../../../
 make
 cp src_files/vault "$PassFolders"
 echo "#Add vault to the path" >> ~/.bashrc
