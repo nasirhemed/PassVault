@@ -53,5 +53,6 @@ make
 cp src_files/vault "$PassFolders"
 echo "#Add vault to the path" >> ~/.bashrc
 echo 'export PATH=$PATH:$PassFolders' >> ~/.bashrc
-source ~/.bashrc
+cd ~/
+source .bashrc
 echo "You should then be ready to use the program."
