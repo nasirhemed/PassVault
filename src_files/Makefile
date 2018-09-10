@@ -1,6 +1,6 @@
 
 CC=gcc
-CFLAGS=-Wall
+CFLAGS= -Wall -g -std=gnu99
 LIBS= -lwolfssl -lbsd
 OUT=CSV_Writer csv_reader aes-file-encrypt encrypted_csv_reader\
     encrypted_csv_appender vault
