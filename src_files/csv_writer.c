@@ -60,6 +60,7 @@ void create_csv_file() {
 		NoEcho(password_verification, KEYSIZE);
 	}
 	create_header(&out);
+	printf("Username: %s\nPassword: %s\ncsv_file: %s\n",username, password, out);
 	add_and_encrypt(username, out, &aes, password);
 	free (username); free(password_verification);
 }
@@ -274,6 +275,11 @@ void generate_password(char *password) {
  */ 
 void add_and_encrypt(char *filename, char *input_lines, Aes *aes, char *pass) {
 	FILE *out_file = fopen(filename, "w");
+	if (out_file == NULL) {
+		fprintf(stderr, "FILE COULD NOT BE OPENED\n");
+		perror("fopen");
+		exit(1);
+	}
 	AesEncrypt(aes, (byte *) pass, 256, input_lines, out_file);
 
 }

@@ -41,8 +41,8 @@ echo $PassFolders
 echo "export PassFolders=$PassFolders" >> ~/.bashrc
 cd wolfssl
 ./configure --enable-pwdbased --enable-dtls
-make
-make install
+sudo make
+sudo make install
 cd src/.libs
 sudo cp libwolfssl.la /usr/lib/
 sudo cp libwolfssl.so /usr/lib
