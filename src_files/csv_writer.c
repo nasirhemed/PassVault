@@ -60,7 +60,6 @@ void create_csv_file() {
 		NoEcho(password_verification, KEYSIZE);
 	}
 	create_header(&out);
-	printf("Username: %s\nPassword: %s\ncsv_file: %s\n",username, password, out);
 	add_and_encrypt(username, out, &aes, password);
 	free (username); free(password_verification);
 }
