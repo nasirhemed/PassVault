@@ -5,6 +5,11 @@ then
 	echo Please install libbsd-dev before running this script
 	exit 1
 fi
+if ! test -d wolfssl
+then
+	echo Please download wolfssl, rename the directory to wolfssl and place\ it here
+	exit 1
+fi
 
 echo "Enter the path directory to store your encrypted passwords"
 echo "Note: If nothing is specified, a default path (~/passFiles) will be "\
@@ -43,16 +48,16 @@ cd wolfssl
 ./configure --enable-pwdbased --enable-dtls
 sudo make
 sudo make install
-cd src/.libs
+cd /usr/local/lib/
 sudo cp libwolfssl.la /usr/lib/
 sudo cp libwolfssl.so /usr/lib
 sudo cp libwolfssl.so.18 /usr/lib
 sudo cp libwolfssl.so.18.0.0 /usr/lib
-cd ../../../
+cd "$currDir"
 make
 cp src_files/vault "$PassFolders"
 echo "#Add vault to the path" >> ~/.bashrc
 echo 'export PATH=$PATH:$PassFolders' >> ~/.bashrc
-cd ~/
-source .bashrc
+make clean
+echo "Enter the command 'source ~/.bashrc'."
 echo "You should then be ready to use the program."
