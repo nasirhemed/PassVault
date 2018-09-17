@@ -79,6 +79,7 @@ void read_csv_file() {
 		exit(1);
 	}
 	strcpy(username, path);
+	username[strlen(username)] = '/';
 	printf("Enter your username: ");
 	get_string(username + strlen(username), NULL);
 	NoEcho(password, KEYSIZE);
